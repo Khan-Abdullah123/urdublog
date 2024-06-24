@@ -13,12 +13,17 @@
 |
 */
 
-$router->get('/', function () {
-    return view('Index');
-});
+$router->get('/', ["as"=>"Home", "uses"=>"AjaxController@Home"]);
 
 
+$router->get('about', ["as"=>"About", "uses"=>"AjaxController@About"]);
 
+$router->get('contact', ["as"=>"Contact", "uses"=>"AjaxController@Contact"]);
+
+$router->get('blog', ["as"=>"Blog", "uses"=>"AjaxController@BlogPage"]);
+$router->get('blog/{id}', ["as"=>"Blog", "uses"=>"AjaxController@BlogDetail"]);
+
+$router->get('single', ["as"=>"Single", "uses"=>"AjaxController@single"]);
 
 
 $router->get('Admin/Login',["as"=>"Login", "uses"=>"AjaxController@Login"]);

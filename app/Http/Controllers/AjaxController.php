@@ -20,6 +20,47 @@ class AjaxController extends Controller
     {
         //
     }
+    public function Home()
+    {
+        $data = DB::table('blogs')->get();
+        // return $data[0]->created_at;
+        return view('Index', ['blogs'=>$data]);
+    }
+
+
+
+    public function About()
+    {
+        return view('about');
+    }
+
+    public function Contact()
+    {
+        return view('contact');
+    }
+
+    public function Single()
+    {
+        $data = DB::table('blogs')->get();
+
+         return view('single', ['blogs'=>$data]);
+    }
+
+    public function Blogpage()
+    {
+        $data = DB::table('blogs')->get();
+        return view('blog',['blogs'=>$data]);
+    }
+
+    public function BlogDetail($id){
+
+        $data = DB::table('blogs')->where('blog_id', $id)->get();
+        if(!count($data)){
+            return '404 Page not found';
+        }
+        return view('blog_details', ['blog'=>$data[0]]);
+    }
+
     public function Login()
     {
         return view('Admin.Login');
@@ -92,6 +133,7 @@ class AjaxController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'blog_title' => 'required',
+            'post_qoute' => 'required',
             'blog_short_desc' => 'required',
             'blog_long_desc' => 'required',
             'blog_image' => ($req->input('blog_id') != "") ? 'image' : 'required|image'
@@ -103,27 +145,26 @@ class AjaxController extends Controller
         $data = $req->input();
         unset($data['blog_id']);
 
-        try {
+        // try {
             if ($req->hasFile('blog_image')) {
                 $image = $req->file('blog_image');
                 $imagename = Str::random(20) . '.' . $image->getClientOriginalExtension();
                 $path = base_path('public/blog/' . $imagename);
                 file_put_contents($path, file_get_contents($image));
                 $data['blog_image'] = $imagename;
-            }
-            if ($req->input('blog_id') != "") {
                 $old = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->first();
-                if (file_exists(base_path('public/blog/' . $old->blog_image))) {
+                if ($old && file_exists(base_path('public/blog/' . $old->blog_image))) {
                     unlink(base_path('public/blog/' . $old->blog_image));
                 }
-                $insert = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->update($data);
+            }
+            if ($req->input('blog_id') != "") {
+
+                $update = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->update($data);
             } else {
                 $insert = DB::table('blogs')->insert($data);
             }
             return response()->json(["success" => true, "message" => "Blog created Successfully"]);
-        } catch (\Throwable $err) {
-            return response()->json(["success" => false, "message" => "An Error Occurred", "err" => $err]);
-        }
+
     }
 
     public function BlogFetch(Request $req)

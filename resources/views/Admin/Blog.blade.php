@@ -18,6 +18,10 @@
                                     <input type="text" class="form-control" name="blog_title" id="blog_title">
                                 </div>
                                 <div class="form-group mb-3">
+                                    <label>Qoute</label>
+                                    <textarea type="text" class="form-control" name="post_qoute" id="post_qoute" rows="3"></textarea>
+                                </div>
+                                <div class="form-group mb-3">
                                     <label>Short Description</label>
                                     <textarea type="text" class="form-control" name="blog_short_desc" id="blog_short_desc" rows="10"></textarea>
                                 </div>
@@ -175,6 +179,7 @@
                     if (res.success) {
                         swal("Success!", res.message, "success");
                         GetData();
+                        $('#blog_modal').modal('hide')
                     } else {
                         swal("Error!", res.message, "error");
                     }
