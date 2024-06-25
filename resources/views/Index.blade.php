@@ -10,7 +10,7 @@
 
                             @foreach ($blogs as $row )
                                 <div class="blog-entry ftco-animate d-md-flex">
-                                    <a href="single.html" class="img img-2"
+                                    <a onclick="openlightbox('{{ url('public/blog/'.$row->blog_image )}}')" class="img img-2"
                                         style="background-image: url({{ url('public/blog/'.$row->blog_image )}});"></a>
                                     <div class="text text-2 pl-md-4" style="text-align: right">
                                         <h3 class="heading"><a href="#">{{ $row->blog_title }}</a></h3>
@@ -38,7 +38,7 @@
 
                 </div>
                 <div class="col-xl-4 sidebar ftco-animate bg-light pt-5"
-                    style="overflow: scroll;height: 100vh;scrollbar-width: none;">
+                    style="overflow: scroll;height: 100%;scrollbar-width: none;">
                     <div class="sidebar-box pt-md-4">
                         <form action="#" class="search-form">
                             <div class="form-group">
@@ -53,7 +53,7 @@
 
                         @foreach ($blogs as $row)
                             <div class="block-21 mb-4 d-flex">
-                                <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
+                                <a class="blog-img mr-4" style="background-image: url({{ url('public/blog/'.$row->blog_image )}});"></a>
                                 <div class="text">
                                     <h3 class="heading"><a href="#">{{ $row->blog_title }}</a></h3>
                                     <div class="meta">
