@@ -2,12 +2,11 @@
 @section('content')
     <?php
     $Parsedown = new Parsedown();
-    $curr_page = url('/') . '?q=' . app('request')->input('q') . '&page=' . app('request')->input('page');
-    function new_page($page)
-    {
-        return url('/search') . '?q=' . app('request')->input('q') . '&page=' . $page;
+    $curr_page = url("/")."?q=". app('request')->input('q'). "&page=". app('request')->input('page') ;
+    function new_page($page){
+        return url('/search')."?q=". app('request')->input('q'). "&page=". $page ;
     }
-    function searchANDpage($search, $page)
+ function searchANDpage($search, $page)
     {
         // If $search and $page parameters are provided, use them
         if ($search != '' && $page != '') {
@@ -21,16 +20,13 @@
             return 'q=' . $search . '&page=' . $page;
         }
     }
-
-    // Example usage
-    echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
-
+// Example usage
+echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
     // echo $curr_page;
-
     ?>
 
 
-    {{--
+
     <div class="align-centre" style="padding: 5px">
         <form action="{{ url('/search?page=' . app('request')->input('page')) }}" class="search-form" method="GET">
             <div class="form-group">
@@ -39,24 +35,24 @@
                     placeholder="Search Here">
             </div>
             <p>Total results: {{ $results->total() }}</p>
-            <p>Showing {{ $blogs->count() }} results</p> --}}
+            <p>Showing {{ $blogs->count() }} results</p>
 
-    {{-- ceil($results->total() / $blogs->count()) --}}
-    {{-- </form> --}}
-
-
-
-
-
-    {{-- </div> --}}
+            {{-- ceil($results->total() / $blogs->count()) --}}
+        </form>
 
 
 
 
 
+    </div>
 
 
-    {{--
+
+
+
+
+
+
     @foreach ($blogs as $row)
         <div class="blog-entry ftco-animate d-md-flex">
             <div style="padding-left:10px; "> <a onclick="openlightbox('{{ url('public/blog/' . $row->blog_image) }}')"
@@ -82,7 +78,7 @@
                             class="ion-ios-arrow-forward"></span></a></p>
             </div>
         </div>
-    @endforeach --}}
+    @endforeach
 
     {{-- <div class="row">
         <div class="col">
@@ -95,7 +91,7 @@
     </div> --}}
 
 
-    {{-- <div class="row">
+    <div class="row">
         <div class="col">
             <div class="block-27">
 
@@ -119,5 +115,5 @@
                 </nav>
             </div>
         </div>
-    </div> --}}
+    </div>
 @endsection
