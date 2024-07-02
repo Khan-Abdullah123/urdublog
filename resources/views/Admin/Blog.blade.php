@@ -34,7 +34,8 @@
                                     <label>Blog Image</label>
                                     <input type="file" accept="image/*" class="form-control" name="blog_image"
                                         id="blog_image_input">
-                                    <div class="mt-3" id="image_preview" style="width: 100%; height: 300px; background: rgb(151, 151, 151) center / contain no-repeat;">
+                                    <div class="mt-3" id="image_preview"
+                                        style="width: 100%; height: 300px; background: rgb(151, 151, 151) center / contain no-repeat;">
                                     </div>
                                 </div>
                             </form>
@@ -43,6 +44,8 @@
                             <button type="button" id="submitbtn" class="btn btn-lg btn-primary" onclick="SaveBlog()"
                                 style="width: 100%">Save</button>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -77,76 +80,72 @@
         </div>
     </main>
     <script>
+        var post_qoute = '';
+        let blog_short_desc = '';
+        let blog_long_desc = '';
         $(document).ready(function() {
             GetData();
-            $('#blog_short_desc').summernote({
-                tabDisable: true,
-                height: 200,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript',
-                        'subscript', 'clear'
-                    ]],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ol', 'ul', 'paragraph', 'height']],
-                    ['insert', ['link']],
-                    ['view', ['undo', 'redo', 'help']]
-                ]
-            });
-            $('#blog_long_desc').summernote({
-                height: 300,
+
+            post_qoute = new EasyMDE({
+                element: document.getElementById('post_qoute')
 
             });
+            blog_short_desc = new EasyMDE({
+                element: document.getElementById('blog_short_desc')
+            });
+            blog_long_desc = new EasyMDE({
+                element: document.getElementById('blog_long_desc')
+            });
+
         });
-
-
 
         function GetData() {
             $('#blog_table').DataTable().destroy()
             $('#blog_table').DataTable({
-                        ajax: {
-                        url: "{{ route('BlogFetch') }}",
-                                 dataSrc: ""
-                                },
-                        columns: [{
-                                data: 'blog_id',
-                                "searchable": true,
-                                "orderable": true,
-                            },
-                            {
-                                data: 'blog_title',
-                                "searchable": true,
-                                "orderable": true,
-                            },
-                        /*     {
-                                data: 'blog_category',
-                                "searchable": true,
-                                "orderable": true,
-                            }, */
-                            {
-                                data: 'blog_image',
-                                render: function(data) {
-                                    return `<img src="{{ url('public/blog/${data}') }}" height="50">`;
-                                }
-                            },
-                            {
-                                data: 'blog_id',
-                                render: function(data) {
-                                    return `
+                ajax: {
+                    url: "{{ route('BlogFetch') }}",
+                    dataSrc: ""
+                },
+                columns: [{
+                        data: 'blog_id',
+                        "searchable": true,
+                        "orderable": true,
+                    },
+                    {
+                        data: 'blog_title',
+                        "searchable": true,
+                        "orderable": true,
+
+                    },
+                    /*     {
+                            data: 'blog_category',
+                            "searchable": true,
+                            "orderable": true,
+                        }, */
+                    {
+                        data: 'blog_image',
+                        render: function(data) {
+                            return `<img src="{{ url('public/blog/${data}') }}" height="50">`;
+                        }
+                    },
+                    {
+                        data: 'blog_id',
+                        render: function(data) {
+                            return `
                                     <button class="btn btn-info" onclick="EditBlog(${data})">Edit</button>
                                     <button class="btn btn-danger" onclick="DeleteBlog(${data})">Delete</button>`;
-                                }
-                            }
-                        ],
-                        responsive: true,
-                    });
+                        }
+                    }
+                ],
+                responsive: true,
+            });
 
         }
 
         $('#blog_image_input').on('change', (e) => {
-            $('#image_preview').css({'background-image': ``});
+            $('#image_preview').css({
+                'background-image': ``
+            });
             const reader = new FileReader();
             const file = e.target.files[0];
             if (!file.type.match('image.*')) {
@@ -164,6 +163,10 @@
         function SaveBlog() {
             $("#submitbtn").prop('disabled', true)
             var formData = new FormData($('#blog_form')[0]);
+            formData.append('post_qoute', post_qoute.value() )
+            formData.append('blog_short_desc', blog_short_desc.value())
+            formData.append('blog_long_desc', blog_long_desc.value())
+
             $.ajax({
                 url: "{{ 'BlogInsert' }}",
                 type: "POST",
@@ -172,7 +175,7 @@
                 contentType: false,
                 success: (res) => {
                     $('#blog_form')[0].reset();
-                    $("#blog_short_desc").summernote('code',"")
+                    $("#blog_short_desc").summernote('code', "")
                     $("#blog_long_desc").summernote('code', "")
                     $('#image_preview').css('background-image', `url('')`);
                     $("#submitbtn").prop('disabled', false)
@@ -207,10 +210,13 @@
                     })
                     $("#blog_short_desc").summernote('code', data[0]['blog_short_desc'])
                     $("#blog_long_desc").summernote('code', data[0]['blog_long_desc'])
-                    $('#image_preview').css('background-image', `url({{ url('public/blog/') }}/${data[0]['blog_image']})`);
+                    $('#image_preview').css('background-image',
+                        `url({{ url('public/blog/') }}/${data[0]['blog_image']})`);
                     $('#blog_modal').modal('show')
                 }
             );
         }
     </script>
+
+
 @endsection

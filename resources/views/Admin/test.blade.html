@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+
+<textarea></textarea>
+<button onclick="getValue()">get value</button>
+
+<script>
+const easyMDE = new EasyMDE();
+
+easyMDE.codemirror.on("change", () => {
+    console.log(easyMDE.value());
+});
+function getValue() {
+    console.log(easyMDE.previewRender());
+}
+
+</script>

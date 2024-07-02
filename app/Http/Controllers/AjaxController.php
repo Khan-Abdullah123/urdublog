@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Parsedown;
 
 class AjaxController extends Controller
 {
@@ -16,17 +17,31 @@ class AjaxController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Parsedown $parsedown)
     {
-        //
+        $this->parsedown = $parsedown;
     }
     public function Home()
     {
         $data = DB::table('blogs')->get();
         // return $data[0]->created_at;
-        return view('Index', ['blogs'=>$data]);
+        return view('Index', ['blogs' => $data, 'parsedown' => $this->parsedown]);
     }
 
+    public function Search(Request $req)
+    {
+
+        // return url();
+        $search = $req->input('search');
+        $results = DB::table('blogs')
+            ->where('blog_title', 'like', "%" . $search . "%")
+          ->paginate(5);
+
+        //   return  $results->total() ;
+
+        return view('search',compact('results'), ['blogs' => $results,'parsedown' => $this->parsedown]);
+
+    }
 
 
     public function About()
@@ -43,22 +58,23 @@ class AjaxController extends Controller
     {
         $data = DB::table('blogs')->get();
 
-         return view('single', ['blogs'=>$data]);
+        return view('single', ['blogs' => $data]);
     }
 
     public function Blogpage()
     {
         $data = DB::table('blogs')->get();
-        return view('blog',['blogs'=>$data]);
+        return view('blog', ['blogs' => $data, 'parsedown' => $this->parsedown]);
     }
 
-    public function BlogDetail($id){
+    public function BlogDetail($id)
+    {
 
         $data = DB::table('blogs')->where('blog_id', $id)->get();
-        if(!count($data)){
+        if (!count($data)) {
             return '404 Page not found';
         }
-        return view('blog_details', ['blog'=>$data[0]]);
+        return view('blog_details', ['blog' => $data[0], 'parsedown' => $this->parsedown]);
     }
 
     public function Login()
@@ -146,24 +162,24 @@ class AjaxController extends Controller
         unset($data['blog_id']);
 
         // try {
-            if ($req->hasFile('blog_image')) {
-                $image = $req->file('blog_image');
-                $imagename = Str::random(20) . '.' . $image->getClientOriginalExtension();
-                $path = base_path('public/blog/' . $imagename);
-                file_put_contents($path, file_get_contents($image));
-                $data['blog_image'] = $imagename;
-                $old = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->first();
-                if ($old && file_exists(base_path('public/blog/' . $old->blog_image))) {
-                    unlink(base_path('public/blog/' . $old->blog_image));
-                }
+        if ($req->hasFile('blog_image')) {
+            $image = $req->file('blog_image');
+            $imagename = Str::random(20) . '.' . $image->getClientOriginalExtension();
+            $path = base_path('public/blog/' . $imagename);
+            file_put_contents($path, file_get_contents($image));
+            $data['blog_image'] = $imagename;
+            $old = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->first();
+            if ($old && file_exists(base_path('public/blog/' . $old->blog_image))) {
+                unlink(base_path('public/blog/' . $old->blog_image));
             }
-            if ($req->input('blog_id') != "") {
+        }
+        if ($req->input('blog_id') != "") {
 
-                $update = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->update($data);
-            } else {
-                $insert = DB::table('blogs')->insert($data);
-            }
-            return response()->json(["success" => true, "message" => "Blog created Successfully"]);
+            $update = DB::table('blogs')->where('blog_id', $req->input('blog_id'))->update($data);
+        } else {
+            $insert = DB::table('blogs')->insert($data);
+        }
+        return response()->json(["success" => true, "message" => "Blog created Successfully"]);
 
     }
 

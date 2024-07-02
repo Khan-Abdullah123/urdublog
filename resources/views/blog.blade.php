@@ -6,8 +6,9 @@
     {
         return preg_match('/[\x{0600}-\x{06FF}]/u', $text);
     }
-    ?>
+    $Parsedown = new Parsedown();
 
+    ?>
 
     <section class="ftco-section ftco-no-pt ftco-no-pb">
         <div class="container">
@@ -18,18 +19,18 @@
                         @foreach ($blogs as $row)
                             <div class="col-md-12" style="width: 100%;">
                                 <div class="blog-entry-2 ftco-animate">
-                                <a onclick="openlightbox('{{ url('public/blog/' . $row->blog_image) }}')"
+                                    <a onclick="openlightbox('{{ url('public/blog/' . $row->blog_image) }}')"
                                         class="img img-2"
                                         style="background-image: url({{ url('public/blog/' . $row->blog_image) }});"></a>
                                     <div class="text pt-4">
                                         <h3
                                             class="heading {{ isUrdu($row->blog_title) ? 'urdu-alignment' : 'english-alignment' }}">
-                                            <a href="#">{{ $row->blog_title }}</a></h3>
+                                            <a href="{{ url('/blog/' . $row->blog_id) }}">{{ $row->blog_title }}</a>
+                                        </h3>
                                         <p style="max-height: 60px; overflow: hidden; margin-bottom: 5px;">
-                                            {!! $row->blog_short_desc !!}</p>
+                                            {!!$Parsedown->text ($row->blog_short_desc )!!}</p>
                                         <div class="author mb-4 d-flex align-items-center">
-                                            <a href="#" class="img"
-                                                style="background-image: url(images/person_1.jpg);"></a>
+
                                             <div class="ml-3 info">
                                                 <span>Written by</span>
                                                 <span><a href="{{ url('/blog/' . $row->blog_id) }}"
