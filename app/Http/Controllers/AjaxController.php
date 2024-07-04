@@ -193,10 +193,11 @@ class AjaxController extends Controller
     public function BlogDelete(Request $req)
     {
         $data = DB::table('blogs')->where('blog_id', $req->input('id'))->first();
-        if (file_exists(base_path('public/blog/' . $data->blog_image))) {
+
+        if ($data->blog_image) {
             unlink(base_path('public/blog/' . $data->blog_image));
         }
-        $delete = DB::table('blogs')->where('blog_id', $req->input('id'))->delete();
+        DB::table('blogs')->where('blog_id', $req->input('id'))->delete();
         return response()->json(["success" => true, "message" => "Blog deleted Successfully"]);
     }
 
