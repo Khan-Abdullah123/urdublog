@@ -2,45 +2,38 @@
 @section('content')
     <?php
     $Parsedown = new Parsedown();
-    $curr_page = url("/")."?q=". app('request')->input('q'). "&page=". app('request')->input('page') ;
-    function new_page($page){
-        return url('/search')."?q=". app('request')->input('q'). "&page=". $page ;
-    }
- function searchANDpage($search, $page)
+    $curr_page = url('/') . '?q=' . app('request')->input('q') . '&page=' . app('request')->input('page');
+
+    function searchANDpage($search = null, $page = null)
     {
-        // If $search and $page parameters are provided, use them
-        if ($search != '' && $page != '') {
-            $search = app('request')->input('q');
-            $page = app('request')->input('page');
-            return 'q=' . $search . '&page=' . $page;
-        } else {
-            // Otherwise, use the request input or default values
-            $search = app('request')->input('q', 'rehan');
-            $page = app('request')->input('page', 1); // Default page is 1
-            return 'q=' . $search . '&page=' . $page;
-        }
+        // Retrieve the current search and page values from the request
+        $currentSearch = app('request')->input('q', 'rehan'); // Default search is 'rehan'
+        $currentPage = app('request')->input('page', 1); // Default page is 1
+
+        // Use provided search value or default to current search value
+        $search = $search ?: $currentSearch;
+
+        // Use provided page value or default to current page value
+        $page = $page ?: $currentPage;
+
+        return 'q=' . $search . '&page=' . $page;
     }
-// Example usage
-echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
-    // echo $curr_page;
+
+    echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
     ?>
 
 
 
     <div class="align-centre" style="padding: 5px">
-        <form action="{{ url('/search?page=' . app('request')->input('page')) }}" class="search-form" method="GET">
+        <form action="{{ url('/search?') }}" class="search-form" method="GET">
             <div class="form-group">
                 <span class="icon icon-search"></span>
+                <input type="hidden" name="page" value="{{ app('request')->input('page') }}">
                 <input type="text" class="form-control" value="{{ app('request')->input('q') }}" name="q"
                     placeholder="Search Here">
             </div>
-            <p>Total results: {{ $results->total() }}</p>
-            <p>Showing {{ $blogs->count() }} results</p>
 
-            {{-- ceil($results->total() / $blogs->count()) --}}
         </form>
-
-
 
 
 
@@ -80,15 +73,7 @@ echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
         </div>
     @endforeach
 
-    {{-- <div class="row">
-        <div class="col">
-    @for ($i = 1; $i <= 7; $i++)
-        <li class="{{ request()->is('http://localhost/urdublog/search?page=' . $i) ? 'active' : '' }}">
-            <a href="{{ url('http://localhost/urdublog/search?page=' . $i) }}">{{ $i }}</a>
-        </li>
-    @endfor
-        </div>
-    </div> --}}
+
 
 
     <div class="row">
@@ -97,19 +82,30 @@ echo searchANDpage(app('request')->input('q'), app('request')->input('page'));
 
                 <ul class="colorlib-active">
                     <li>
-                        <a href="$curr_page" aria-label="Previous">
+                        @if (app('request')->input('page', 1) > 1)
+                            <a href="{{ url('/search') . '?' . searchANDpage(app('request')->input('q'), app('request')->input('page') - 1) }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        @else
                             <span aria-hidden="true">&laquo;</span>
-                        </a>
+                        @endif
                     </li>
                     @for ($i = 1; $i <= 7; $i++)
                         <li class="{{ request()->input('page') == $i ? 'active' : '' }}">
-                            <a href="{{ new_page($i) }}">{{ $i }}</a>
+                            <a
+                                href="{{ url('/search') . '?q=' . app('request')->input('q') . '&page=' . $i }}">{{ $i }}</a>
                         </li>
                     @endfor
                     <li>
-                        <a href="curr_page" aria-label="Next">
+                        @if (app('request')->input('page', 1) < 7)
+                            <a href="{{ url('/search') . '?' . searchANDpage(app('request')->input('q'), app('request')->input('page') + 1) }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        @else
                             <span aria-hidden="true">&raquo;</span>
-                        </a>
+                        @endif
                     </li>
                 </ul>
                 </nav>

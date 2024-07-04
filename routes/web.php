@@ -43,7 +43,10 @@ $router->post('Admin/LoginUser',["as"=>"LoginUser", "uses"=>"AjaxController@Logi
 $router->group(['prefix' => 'Admin', 'middleware'=> 'auth'], function () use ($router) {
     $router->get('/Dashboard',["as"=>"Dashboard", "uses"=>"AjaxController@Dashboard"]);
 
-    $router->get('/Blog',["as"=>"Blog", "uses"=>"AjaxController@Blog"]);
+    // $router->get('/Blog',["as"=>"Blog", "uses"=>"AjaxController@Blog"]);
+
+    $router->get('/Blog1',["as"=>"Blog1", "uses"=>"AjaxController@Blog1"]);
+
     $router->post('/BlogInsert',["as"=>"BlogInsert", "uses"=>"AjaxController@BlogInsert"]);
     $router->get('/BlogFetch',["as"=>"BlogFetch", "uses"=>"AjaxController@BlogFetch"]);
     $router->get('/BlogDelete',["as"=>"BlogDelete", "uses"=>"AjaxController@BlogDelete"]);

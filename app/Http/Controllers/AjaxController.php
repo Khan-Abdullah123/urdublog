@@ -21,6 +21,11 @@ class AjaxController extends Controller
     {
         $this->parsedown = $parsedown;
     }
+
+    public function Blog1()
+    {
+        return view('Admin.Blog1'); // Adjust the view path as necessary
+    }
     public function Home()
     {
         $data = DB::table('blogs')->get();
@@ -30,14 +35,10 @@ class AjaxController extends Controller
 
     public function Search(Request $req)
     {
-
-        // return url();
         $search = $req->input('search');
         $results = DB::table('blogs')
             ->where('blog_title', 'like', "%" . $search . "%")
           ->paginate(5);
-
-        //   return  $results->total() ;
 
         return view('search',compact('results'), ['blogs' => $results,'parsedown' => $this->parsedown]);
 
@@ -133,10 +134,6 @@ class AjaxController extends Controller
 
     public function Dashboard()
     {
-        // $data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        // $year = date('Y');
-        // $result = DB::table('visitor')->select(DB::raw('YEAR(datetime) AS year, MONTH(datetime) AS month, COUNT(*) AS count'))->whereRaw('YEAR(datetime) = ?', [$year])->groupBy(DB::raw('YEAR(datetime), MONTH(datetime)'))->get();
-        // for ($i = 1; $i <= count($result); $i++) {$data[$i - 1] = $result[$i - 1]->count;}
         return view('Admin.Dashboard');
     }
 

@@ -63,10 +63,16 @@
                             Dashboard
                         </a>
 
-                        <a class="nav-link" href="{{ route('Blog') }}">
+                        {{-- <a class="nav-link" href="{{ route('Blog') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-images"></i></div>
                             Blog
+                        </a> --}}
+
+                        <a class="nav-link" href="{{ route('Blog1') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-images"></i></div>
+                            Blog1
                         </a>
+
                         <a class="nav-link" href="{{ route('Gallery') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-images"></i></div>
                             Gallery
